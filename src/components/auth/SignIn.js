@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
+import { signin } from "../../store/actions/authAction";
 
-const SignIn = () => {
+const SignIn = ({ signin, authError }) => {
+  console.log("test" + authError);
   let [state, setState] = useState({ email: "", password: "" });
   let handleChange = (e) => {
     setState({
@@ -10,7 +13,7 @@ const SignIn = () => {
   };
   let handleSubmit = (e) => {
     e.preventDefault();
-    console.log(state);
+    signin(state);
   };
   return (
     <div className="container">
@@ -26,10 +29,25 @@ const SignIn = () => {
         </div>
         <div className="input-field">
           <button className="btn pink lighten-1 z-depth-0">Login</button>
+          <div className="red-text center">
+            {authError ? <p>{authError}</p> : null}
+          </div>
         </div>
       </form>
     </div>
   );
 };
 
-export default SignIn;
+const mapStateToProps = (state) => {
+  return {
+    authError: state.auth.authError,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    signin: (creds) => dispatch(signin(creds)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
